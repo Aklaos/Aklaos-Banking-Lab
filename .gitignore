@@ -1,0 +1,14 @@
+# secrets / accès cluster : ne jamais committer
+*.kubeconfig
+kubeconfig*
+.env
+.env.*
+*.pem
+*.key
+secrets/
+# divers
+.DS_Store
+*.swp
+bin/
+.kube/
+.local/
