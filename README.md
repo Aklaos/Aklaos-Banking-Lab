@@ -13,6 +13,8 @@ make status   # nœuds et pods
 make down     # détruit tout (l'état vit dans git)
 ```
 
+Option : avec [direnv](https://direnv.net), `direnv allow` à la racine charge automatiquement l'environnement du lab (`.envrc`) dans chaque nouveau shell, sans `eval "$(make env)"`.
+
 ## Organisation
 - `cluster/` : configuration du cluster local
 - `apps/` : services applicatifs
