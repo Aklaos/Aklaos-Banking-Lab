@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bankapp
+  namespace: staging
+  labels:
+    app: bankapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: bankapp
+  template:
+    metadata:
+      labels:
+        app: bankapp
+    spec:
+      containers:
+      - name: bankapp
+        image: localhost/aklaos-bankapp:0.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
