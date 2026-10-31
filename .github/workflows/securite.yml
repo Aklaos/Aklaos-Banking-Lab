@@ -1,0 +1,36 @@
+name: securite
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks (image épinglée, historique complet)
+        run: |
+          docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/repo" \
+            ghcr.io/gitleaks/gitleaks:v8.18.4 detect --source /repo --redact --verbose
+  yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: check-yaml
+        run: |
+          python3 - <<'PY'
+          import subprocess, sys, yaml
+          files = subprocess.check_output(["git", "ls-files", "*.yml", "*.yaml"], text=True).split()
+          bad = 0
+          for f in files:
+              try:
+                  list(yaml.safe_load_all(open(f)))
+              except yaml.YAMLError as e:
+                  print(f"{f}: {e}")
+                  bad += 1
+          sys.exit(1 if bad else 0)
+          PY

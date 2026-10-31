@@ -25,7 +25,7 @@ export HELM_CACHE_HOME  := $(LOCAL)/helm/cache
 export HELM_CONFIG_HOME := $(LOCAL)/helm/config
 export HELM_DATA_HOME   := $(LOCAL)/helm/data
 
-.PHONY: help tools hooks up down reset status env clean-tools
+.PHONY: help tools up down reset status env clean-tools
 .DEFAULT_GOAL := help
 
 help: ## Liste les commandes
@@ -38,11 +38,6 @@ tools: ## Vérifie les outils (utilise ceux du PATH, télécharge seulement les 
 	@command -v kubectl >/dev/null || { curl -fsSLo $(BIN)/kubectl https://dl.k8s.io/release/$(KUBECTL_VERSION)/bin/$(OS)/$(ARCH)/kubectl && chmod +x $(BIN)/kubectl; }
 	@command -v helm >/dev/null    || { curl -fsSL https://get.helm.sh/helm-$(HELM_VERSION)-$(OS)-$(ARCH).tar.gz | tar -xz -C $(LOCAL) && mv $(LOCAL)/$(OS)-$(ARCH)/helm $(BIN)/helm && rm -rf $(LOCAL)/$(OS)-$(ARCH); }
 	@for t in kind kubectl; do command -v $$t >/dev/null || { echo "manquant: $$t"; exit 1; }; done
-
-hooks: ## Installe pre-commit dans un venv local (.local/venv)
-	python3 -m venv $(LOCAL)/venv
-	$(LOCAL)/venv/bin/pip install -q pre-commit
-	$(LOCAL)/venv/bin/pre-commit install
 
 up: tools ## Crée le cluster kind (kubeconfig local)
 	@mkdir -p $(dir $(KUBECONFIG))

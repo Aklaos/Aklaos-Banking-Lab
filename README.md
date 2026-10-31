@@ -8,12 +8,13 @@ Seul prérequis système : **Docker**. Tout le reste (kind, kubectl, helm, kubec
 ```
 make up       # télécharge les outils si besoin, crée le cluster kind
 make env      # exports pour utiliser kubectl/helm dans ton shell (eval "$(make env)")
-make hooks    # pre-commit dans un venv local
 make status   # nœuds et pods
 make down     # détruit tout (l'état vit dans git)
 ```
 
-Option : avec [direnv](https://direnv.net), `direnv allow` à la racine charge automatiquement l'environnement du lab (`.envrc`) dans chaque nouveau shell, sans `eval "$(make env)"`.
+Option : avec [direnv](https://direnv.net), `direnv allow` à la racine charge automatiquement l'environnement du lab (`.envrc`, exports écrits en clair) dans chaque nouveau shell. Relis `.envrc` avant chaque `direnv allow`.
+
+Contrôles de sécurité (secrets, YAML) : ils tournent sur GitHub à chaque PR (`.github/workflows/securite.yml`), pas sur ta machine.
 
 ## Organisation
 - `cluster/` : configuration du cluster local
